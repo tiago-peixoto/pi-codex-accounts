@@ -1,0 +1,41 @@
+{
+  "name": "pi-codex-accounts",
+  "version": "0.1.0",
+  "description": "Use more than one ChatGPT (Codex) subscription in pi, each with its own login and its own entries in /model.",
+  "keywords": [
+    "pi-package",
+    "pi",
+    "pi-extension",
+    "codex",
+    "openai",
+    "chatgpt"
+  ],
+  "license": "MIT",
+  "author": "Tiago Peixoto",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tiago-peixoto/pi-codex-accounts.git"
+  },
+  "type": "module",
+  "files": [
+    "src"
+  ],
+  "pi": {
+    "extensions": [
+      "./src/index.ts"
+    ]
+  },
+  "scripts": {
+    "test": "tsc && node --test test/index.test.ts"
+  },
+  "peerDependencies": {
+    "@earendil-works/pi-ai": "*",
+    "@earendil-works/pi-coding-agent": "*"
+  },
+  "devDependencies": {
+    "@earendil-works/pi-ai": "0.85.1",
+    "@earendil-works/pi-coding-agent": "0.85.1",
+    "@types/node": "22.20.2",
+    "typescript": "7.0.2"
+  }
+}
