@@ -1,14 +1,15 @@
 {
   "name": "pi-codex-accounts",
   "version": "0.1.1",
-  "description": "Use more than one ChatGPT (Codex) subscription in pi, each with its own login and its own entries in /model.",
+  "description": "Keep your work and personal ChatGPT (Codex) accounts signed in to pi side by side, and switch between them from /model.",
   "keywords": [
     "pi-package",
     "pi",
     "pi-extension",
     "codex",
     "openai",
-    "chatgpt"
+    "chatgpt",
+    "accounts"
   ],
   "license": "MIT",
   "author": "Tiago Peixoto",

@@ -1,17 +1,22 @@
-# pi-codex-accounts
-
-Use more than one ChatGPT (Codex) subscription in [pi](https://pi.dev), each with its own login and its own entries in `/model`.
-
-pi's built-in OpenAI Codex provider holds one login.
-This extension adds providers that work exactly like it, so a second (or third) ChatGPT account can stay signed in next to the first:
-
 ```text
-gpt-5.6-sol [openai-codex]
-gpt-5.6-sol [openai-codex-2]
+              __                                      __
+ _______  ___/ /____ __  ___ ____________  __ _____  / /____
+/ __/ _ \/ _  / -_) \ / / _ `/ __/ __/ _ \/ // / _ \/ __(_-<
+\__/\___/\_,_/\__/_\_\  \_,_/\__/\__/\___/\_,_/_//_/\__/___/
+
+          [ work ]   <-- /model -->   [ personal ]
 ```
 
-It never switches accounts on its own.
-You choose the account whenever you choose a model.
+**pi-codex-accounts** keeps your work and personal ChatGPT accounts signed in to [pi](https://pi.dev), side by side.
+
+pi's built-in OpenAI Codex provider holds one ChatGPT login.
+If you use one account at work and another for your own projects, switching means logging out and back in every time.
+This little extension gives each account its own login and its own models in `/model`, so switching is just picking a model.
+
+```text
+gpt-5.6-sol [openai-codex]        your personal account (pi's built-in provider)
+gpt-5.6-sol [openai-codex-work]   your work account
+```
 
 ## Install
 
@@ -19,33 +24,38 @@ You choose the account whenever you choose a model.
 pi install npm:pi-codex-accounts
 ```
 
-Then run `/login`, choose **Sign in with an account**, pick **OpenAI Codex (2)**, and sign in with your other ChatGPT account.
-Your browser may reuse the ChatGPT account it is already signed into, so use a private window or the device-code option.
+## Set it up
 
-## More accounts or other names
+1. Name your extra account in `~/.pi/agent/codex-accounts.json`:
 
-Create `~/.pi/agent/codex-accounts.json` and restart pi:
+   ```json
+   { "accounts": ["work"] }
+   ```
 
-```json
-{ "accounts": ["Work", "Personal"] }
-```
+2. Restart pi, run `/login`, choose **Sign in with an account**, and pick **OpenAI Codex (work)**.
+3. Sign in with your work ChatGPT account.
+   A private browser window helps, so the browser doesn't reuse the account it is already signed into.
+4. Open `/model` and pick any `[openai-codex-work]` model.
 
-Each label becomes a provider: `Work` shows up as **OpenAI Codex (Work)** with the id `openai-codex-work`.
-Without the file you get one extra account, `openai-codex-2`.
-An empty list adds none.
-pi stores logins under the provider id, so renaming a label means signing in again.
+## The accounts file
+
+Each label becomes its own account: `"work"` shows up as **OpenAI Codex (work)**, with the provider id `openai-codex-work`.
+If you have more than one work account, for example one per client, list them all: `{ "accounts": ["work", "client"] }`.
+Without the file you get one extra account, labelled `2`.
+
+pi saves each login under the provider id, so renaming a label means signing in again.
+The old login stays listed in `/logout` under its old id, and you can remove it from there.
 
 ## How it works
 
-Each account reuses pi's own Codex login flow, model list, and request code, so it behaves like the built-in provider and picks up new Codex models when pi updates.
-pi keeps each login in `~/.pi/agent/auth.json` under the account's provider id, and requests use that login's token.
+Each account is pi's own Codex provider under a new id: the same login flow, the same models, and the same request code.
+It behaves like the built-in provider and picks up new Codex models whenever pi updates.
 
-Two details keep accounts apart:
+Accounts stay separate.
+Each one has its own saved login, and when you switch accounts in the middle of a conversation, one account's encrypted reasoning is never sent to another.
 
-- pi-ai's Codex code keeps Responses tool-call ids intact only for the provider id `openai-codex`, so requests go out under that id and replies are relabelled with the account's id.
-- Replies from a different Codex account in the same session count as another provider's, so their encrypted reasoning is dropped instead of being sent to this account.
-
-The extension never copies tokens into environment variables, so commands the agent runs cannot read them.
+Your tokens stay in pi's `auth.json`.
+The extension never copies them into environment variables, so commands the agent runs can't read them.
 
 Tested with pi 0.85.1.
 
@@ -56,4 +66,9 @@ npm install
 npm test
 ```
 
-Releases are built by GitHub Actions and published with npm trusted publishing, so every version on npm links back to the commit it was built from.
+`npm test` runs the type check, the unit tests, and a smoke test that installs the packed package into pi the way `pi install` does.
+Releases are built on GitHub Actions and published with npm trusted publishing, so every version on npm links back to the commit it came from.
+
+## License
+
+MIT
