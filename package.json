@@ -1,6 +1,6 @@
 {
   "name": "pi-codex-accounts",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "Keep your work and personal ChatGPT (Codex) accounts signed in to pi side by side, and switch between them from /model.",
   "keywords": [
     "pi-package",
@@ -24,7 +24,8 @@
   "pi": {
     "extensions": [
       "./src/index.ts"
-    ]
+    ],
+    "image": "https://raw.githubusercontent.com/tiago-peixoto/pi-codex-accounts/main/assets/model-list.png"
   },
   "scripts": {
     "test": "tsc && node --test test/index.test.ts && sh scripts/smoke.sh"
