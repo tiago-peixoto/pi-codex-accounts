@@ -1,8 +1,7 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 import { type AssistantMessage, type AssistantMessageEvent, createAssistantMessageEventStream } from "@earendil-works/pi-ai";
-import { openaiCodexProvider } from "@earendil-works/pi-ai/providers/openai-codex";
-import { asCodexContext, createAccountProvider, parseAccounts, withProvider } from "../src/index.ts";
+import { asCodexContext, builtinCodexProvider, createAccountProvider, parseAccounts, withProvider } from "../src/index.ts";
 
 function reply(provider: string): AssistantMessage {
 	return {
@@ -43,7 +42,7 @@ test("accounts come from the config file, with one extra account by default", ()
 });
 
 test("an account is the built-in Codex provider under its own id and login name", () => {
-	const codex = openaiCodexProvider();
+	const codex = builtinCodexProvider();
 	const provider = createAccountProvider(codex, { id: "openai-codex-work", name: "OpenAI Codex (Work)" });
 	assert.equal(provider.id, "openai-codex-work");
 	assert.equal(provider.auth.oauth?.name, "OpenAI Codex (Work)");

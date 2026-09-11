@@ -8,7 +8,7 @@ import {
 	type Model,
 	type Provider,
 } from "@earendil-works/pi-ai";
-import { openaiCodexProvider } from "@earendil-works/pi-ai/providers/openai-codex";
+import { builtinProviders } from "@earendil-works/pi-ai/providers/all";
 import { type ExtensionAPI, getAgentDir } from "@earendil-works/pi-coding-agent";
 
 const CODEX = "openai-codex";
@@ -29,8 +29,15 @@ export default function codexAccounts(pi: ExtensionAPI) {
 	} catch (error) {
 		throw new Error(`${path}: ${error instanceof Error ? error.message : String(error)}`);
 	}
-	const codex = openaiCodexProvider();
+	const codex = builtinCodexProvider();
 	for (const account of accounts) pi.registerProvider(createAccountProvider(codex, account));
+}
+
+/** pi lets extensions import only a few pi-ai entry points; providers/all is the one with the built-in providers. */
+export function builtinCodexProvider(): Provider<CodexApi> {
+	const codex = builtinProviders().find((provider) => provider.id === CODEX);
+	if (!codex) throw new Error("pi no longer ships a built-in OpenAI Codex provider");
+	return codex as Provider<CodexApi>;
 }
 
 /** The config file's text, or undefined when there is no config file. */

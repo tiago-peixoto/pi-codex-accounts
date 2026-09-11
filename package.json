@@ -1,6 +1,6 @@
 {
   "name": "pi-codex-accounts",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Use more than one ChatGPT (Codex) subscription in pi, each with its own login and its own entries in /model.",
   "keywords": [
     "pi-package",
@@ -26,7 +26,7 @@
     ]
   },
   "scripts": {
-    "test": "tsc && node --test test/index.test.ts"
+    "test": "tsc && node --test test/index.test.ts && sh scripts/smoke.sh"
   },
   "peerDependencies": {
     "@earendil-works/pi-ai": "*",
