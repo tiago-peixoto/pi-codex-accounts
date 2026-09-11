@@ -1,6 +1,6 @@
 {
   "name": "pi-codex-accounts",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Keep your work and personal ChatGPT (Codex) accounts signed in to pi side by side, and switch between them from /model.",
   "keywords": [
     "pi-package",
