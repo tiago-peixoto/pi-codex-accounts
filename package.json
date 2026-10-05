@@ -1,7 +1,7 @@
 {
   "name": "pi-codex-accounts",
   "version": "0.1.4",
-  "description": "Keep your work and personal ChatGPT (Codex) accounts signed in to pi side by side, and switch between them from /model.",
+  "description": "Keep your work and personal ChatGPT accounts signed in to pi side by side, and switch between them from /model.",
   "keywords": [
     "pi-package",
     "pi",
@@ -35,8 +35,8 @@
     "@earendil-works/pi-coding-agent": "*"
   },
   "devDependencies": {
-    "@earendil-works/pi-ai": "0.85.1",
-    "@earendil-works/pi-coding-agent": "0.85.1",
+    "@earendil-works/pi-ai": "1.0.3",
+    "@earendil-works/pi-coding-agent": "1.0.3",
     "@types/node": "22.20.2",
     "typescript": "7.0.2"
   }

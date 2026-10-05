@@ -12,25 +12,25 @@ tar -xzf "$tmp"/pi-codex-accounts-*.tgz -C "$tmp"
 
 export PI_CODING_AGENT_DIR="$tmp/agent"
 mkdir -p "$PI_CODING_AGENT_DIR"
-printf '%s' '{"openai-codex-2": {"type": "oauth", "refresh": "x", "access": "x", "expires": 4102444800000}}' \
+# The login is expired and has no client id, so pi must refresh it before a request,
+# and the refresh fails before any network call.
+printf '%s' '{"openai-2": {"type": "oauth", "refresh": "x", "access": "x", "expires": 0}}' \
 	>"$PI_CODING_AGENT_DIR/auth.json"
 chmod 600 "$PI_CODING_AGENT_DIR/auth.json"
 "$pi" install "$tmp/package" >/dev/null
 
 # --list-models skips extensions that fail to load, so check that the account's models show up.
-model=$("$pi" --list-models openai-codex-2 </dev/null | awk '$1 == "openai-codex-2" { print $2; exit }')
+model=$("$pi" --list-models openai-2 </dev/null | awk '$1 == "openai-2" { print $2; exit }')
 if [ -z "$model" ]; then
-	echo "smoke: the packed extension did not register openai-codex-2" >&2
-	"$pi" -p --no-session --provider openai-codex-2 --model any hi </dev/null >&2 || true
+	echo "smoke: the packed extension did not register openai-2" >&2
+	"$pi" -p --no-session --provider openai-2 --model any hi </dev/null >&2 || true
 	exit 1
 fi
-echo "smoke: the packed extension registers openai-codex-2"
+echo "smoke: the packed extension registers openai-2"
 
-# With the fake token, a request has to get through the extension's stream wrapper
-# and fail inside pi's Codex code, which rejects the token before any network call.
-out=$("$pi" -p --no-session --provider openai-codex-2 --model "$model" hi </dev/null 2>&1 || true)
+out=$("$pi" -p --no-session --provider openai-2 --model "$model" hi </dev/null 2>&1 || true)
 case $out in
-*accountId*) echo "smoke: a request reaches pi's Codex code through the extension" ;;
+*"refresh failed for openai-2"*"reconnect ChatGPT"*) echo "smoke: a request uses the account's own ChatGPT login" ;;
 *)
 	printf 'smoke: unexpected request result:\n%s\n' "$out" >&2
 	exit 1
