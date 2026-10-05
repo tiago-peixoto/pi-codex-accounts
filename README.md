@@ -51,6 +51,8 @@ The old login stays listed in `/logout` under its old id, and you can remove it 
 
 Version 0.1 copied pi's OpenAI Codex provider, which pi now calls legacy.
 This version copies pi's OpenAI provider and its **Sign in with ChatGPT** login instead, so it needs pi 1.0 or newer.
+To update, run `pi update --extensions` and restart pi.
+If you installed a fixed version, such as `npm:pi-codex-accounts@0.1.4`, run `pi install npm:pi-codex-accounts` first, because pi does not update a fixed version.
 The provider ids changed from `openai-codex-work` to `openai-work`, so sign in to each account once more.
 The accounts file keeps its name and its format.
 
