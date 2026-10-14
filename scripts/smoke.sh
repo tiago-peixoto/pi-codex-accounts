@@ -12,21 +12,25 @@ tar -xzf "$tmp"/pi-codex-accounts-*.tgz -C "$tmp"
 
 export PI_CODING_AGENT_DIR="$tmp/agent"
 mkdir -p "$PI_CODING_AGENT_DIR"
-# The login is expired and has no client id, so pi must refresh it before a request,
+# The logins are expired and have no client id, so pi must refresh one before a request,
 # and the refresh fails before any network call.
-printf '%s' '{"openai-2": {"type": "oauth", "refresh": "x", "access": "x", "expires": 0}}' \
+printf '%s' '{"openai-2": {"type": "oauth", "refresh": "x", "access": "x", "expires": 0},
+	"openai-codex-2": {"type": "oauth", "refresh": "x", "access": "x", "expires": 0}}' \
 	>"$PI_CODING_AGENT_DIR/auth.json"
 chmod 600 "$PI_CODING_AGENT_DIR/auth.json"
 "$pi" install "$tmp/package" >/dev/null
 
-# --list-models skips extensions that fail to load, so check that the account's models show up.
-model=$("$pi" --list-models openai-2 </dev/null | awk '$1 == "openai-2" { print $2; exit }')
-if [ -z "$model" ]; then
-	echo "smoke: the packed extension did not register openai-2" >&2
-	"$pi" -p --no-session --provider openai-2 --model any hi </dev/null >&2 || true
-	exit 1
-fi
-echo "smoke: the packed extension registers openai-2"
+# --list-models skips extensions that fail to load and providers without a login,
+# so check that both accounts' models show up.
+for account in openai-2 openai-codex-2; do
+	model=$("$pi" --list-models "$account" </dev/null | awk -v account="$account" '$1 == account { print $2; exit }')
+	if [ -z "$model" ]; then
+		echo "smoke: the packed extension did not register $account" >&2
+		"$pi" -p --no-session --provider "$account" --model any hi </dev/null >&2 || true
+		exit 1
+	fi
+	echo "smoke: the packed extension registers $account"
+done
 
 out=$("$pi" -p --no-session --provider openai-2 --model "$model" hi </dev/null 2>&1 || true)
 case $out in

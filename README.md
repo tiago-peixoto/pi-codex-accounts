@@ -14,8 +14,9 @@ If you use one account at work and another for your own projects, switching mean
 This little extension gives each account its own login and its own models in `/model`, so switching is just picking a model.
 
 ```text
-gpt-6.1-sol [openai]        your personal account (pi's built-in provider)
-gpt-6.1-sol [openai-work]   your work account
+gpt-6.1-sol [openai]              your personal account (pi's built-in provider)
+gpt-6.1-sol [openai-work]         your work account
+gpt-6.1-sol [openai-codex-work]   your work account, through the Codex OAuth login
 ```
 
 ## Install
@@ -37,29 +38,36 @@ pi install npm:pi-codex-accounts
    A private browser window helps, so the browser doesn't reuse the account it is already signed into.
 4. Open `/model` and pick any `[openai-work]` model.
 
+Each label also gets an **OpenAI Codex (work)** login, with the provider id `openai-codex-work`.
+It copies pi's legacy OpenAI Codex provider and its Codex OAuth login, which signs in through the browser or with a device code.
+Sign in there too if a tool reads the account's quota, such as [quota-axi](https://www.npmjs.com/package/quota-axi): a Sign in with ChatGPT token returns no quota data, and quota-axi measures the `openai-codex-*` logins.
+
 ## The accounts file
 
-Each label becomes its own account: `"work"` shows up as **OpenAI (work)**, with the provider id `openai-work`.
+Each label becomes two accounts: `"work"` shows up as **OpenAI (work)**, with the provider id `openai-work`, and as **OpenAI Codex (work)**, with the provider id `openai-codex-work`.
 If you have more than one work account, for example one per client, list them all: `{ "accounts": ["work", "client"] }`.
-Without the file you get one extra account, labelled `2`.
+Without the file you get one extra label, `2`.
 The label `codex` is not allowed, because its provider id `openai-codex` belongs to pi's legacy Codex provider.
 
 pi saves each login under the provider id, so renaming a label means signing in again.
 The old login stays listed in `/logout` under its old id, and you can remove it from there.
 
-## Upgrading from 0.1
+## Upgrading
 
-Version 0.1 copied pi's OpenAI Codex provider, which pi now calls legacy.
-This version copies pi's OpenAI provider and its **Sign in with ChatGPT** login instead, so it needs pi 1.0 or newer.
 To update, run `pi update --extensions` and restart pi.
 If you installed a fixed version, such as `npm:pi-codex-accounts@0.1.4`, run `pi install npm:pi-codex-accounts` first, because pi does not update a fixed version.
-The provider ids changed from `openai-codex-work` to `openai-work`, so sign in to each account once more.
 The accounts file keeps its name and its format.
+
+Version 0.1 copied pi's OpenAI Codex provider, which pi now calls legacy, under `openai-codex-work`.
+Version 0.2 copied pi's OpenAI provider and its **Sign in with ChatGPT** login instead, under `openai-work`, and needs pi 1.0 or newer.
+Version 0.3 gives each label both, so a login saved by 0.1 works again under its old id, and a login saved by 0.2 stays as it is.
 
 ## How it works
 
 Each account is pi's own OpenAI provider under a new id: the same Sign in with ChatGPT flow, the same models, and the same request code.
-It behaves like the built-in provider and picks up new OpenAI models whenever pi updates.
+The Codex account is pi's own legacy OpenAI Codex provider under a new id in the same way.
+Both behave like the built-in provider and pick up new models whenever pi updates.
+If a future pi drops the legacy Codex provider, the Codex accounts go away and the others keep working.
 
 Accounts stay separate.
 Each one has its own saved login, and when you switch accounts in the middle of a conversation, one account's encrypted reasoning is never sent to another.
